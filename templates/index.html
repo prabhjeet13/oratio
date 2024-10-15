@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oratio - Speech to Speech Magic</title>
+    <style>
+        body {
+            background-color: #4e3b29; /* Dark brown for body background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            background-color: #aeeeee; /* Light blue for container background */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px; /* Adjusted max width of the container */
+            width: 90%; /* Responsive width */
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* Adjusted gap between elements */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .container:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            font-size: 30px;
+            text-transform: uppercase;
+            color: #004d40; /* Dark color for heading */
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        h2 {
+            font-size: 18px;
+            color: #004d40; /* Same color as ORATIO heading */
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        /* Styled dropdown with margin and width equal to model width */
+        select {
+            margin: 10px 0; /* Added margin to dropdown */
+            padding: 12px;
+            border: 2px solid #00777d; /* Darker border color */
+            border-radius: 5px;
+            width: 95%; /* Set to 100% for dropdown width */
+            font-size: 16px;
+            background-color: #ffffff; /* White background for the dropdown */
+            color: #333; /* Dark text color */
+            appearance: none; /* Remove default dropdown arrow */
+            background: #ffffff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23004740" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center; /* Custom arrow */
+            background-size: 12px; /* Size of the custom arrow */
+        }
+        input[type="file"] {
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 2px solid #00777d; /* Darker border color */
+            border-radius: 5px;
+            width: 90%; /* Set to 100% for file upload width */
+            background-color: #ffffff; /* White background for file input */
+            font-size: 16px; /* Font size for file input */
+            transition: border-color 0.3s ease; /* Smooth border transition */
+        }
+        input[type="file"]:hover {
+            border-color: #005f5f; /* Darker border on hover */
+        }
+        button {
+            background-color: #00bfff;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background-color: #1e90ff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #c8e6c9; /* Light green for result background */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .result h3 {
+            font-size: 22px;
+            color: #004d40; /* Same color as ORATIO heading for translation result */
+            margin: 0; /* Reset margin for h3 */
+            text-transform: uppercase; /* Uppercase for emphasis */
+        }
+        p {
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+            line-height: 1.5;
+            text-transform: lowercase;
+        }
+        .container .result p {
+            background-color: #e0f2f1;
+            padding: 12px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        audio {
+            margin-top: 20px; /* Added margin to audio player */
+            width: 100%; /* Set audio player width to 100% */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Oratio</h1>
+    <h2>Transform Your Voice Across Languages</h2> <!-- Updated subheading -->
+
+    <!-- File Upload -->
+    <form id="audio-form" enctype="multipart/form-data">
+        <input type="file" id="audio-file" accept="audio/*">
+        <br>
+        <label for="target-lang">Choose Target Language:</label>
+        <select id="target-lang">
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option> <!-- Added German -->
+            <option value="pt">Portuguese</option> <!-- Added Portuguese -->
+            <option value="it">Italian</option> <!-- Added Italian -->
+        </select>
+        <br><br>
+        <button id="upload-button" type="submit">Upload and Translate</button>
+    </form>
+
+    <div class="result">
+        <h3>Translation Result:</h3>
+        <audio id="audio-player" controls style="display:none;"></audio>
+    </div>
+</div>
+
+<script>
+    // Handle form submission for file upload and translation
+    document.getElementById('audio-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        const fileInput = document.getElementById('audio-file');
+        const targetLang = document.getElementById('target-lang').value;
+
+        if (!fileInput.files.length) {
+            alert("Please upload an audio file.");
+            return;
+        }
+
+        formData.append('file', fileInput.files[0]);
+        formData.append('target_lang', targetLang);
+
+        await fetch('/oratio', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.blob())
+        .then(audioBlob => {
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audioPlayer = document.getElementById('audio-player');
+            audioPlayer.src = audioUrl;
+            audioPlayer.style.display = 'block'; // Show the player
+            audioPlayer.play();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+</body>
+</html>
