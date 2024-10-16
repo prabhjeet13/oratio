@@ -40,7 +40,7 @@ def speech_to_text(file_path):
     config = Decoder.default_config()
     config.set_string('-hmm', model_dir)  # Path to acoustic model
     config.set_string('-dict', dictionary_path)  # Path to dictionary
-    print(temp_audio_path)
+    # print(temp_audio_path)
     # Start decoding from an audio file
     decoder = Decoder(config)
     decoder.start_utt()
@@ -72,9 +72,9 @@ def speech_to_text(file_path):
 
 # def clean_transcription(text):
     """Clean the transcription by removing unwanted characters"""
-    text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
-    text = text.lower()
-    return text
+    # text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+    # text = text.lower()
+    # return text
 
 # 2. Text to Text
 from deep_translator import GoogleTranslator
