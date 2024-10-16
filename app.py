@@ -15,7 +15,10 @@ UPLOAD_FOLDER = 'uploads/'
 ALLOWED_EXTENSIONS = {'wav', 'mp3', 'm4a', 'flac'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
 
 def allowed_file(filename):
     """Check if the uploaded file has an allowed extension."""
