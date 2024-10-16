@@ -43,7 +43,6 @@ def translate_speech_to_speech():
             if transcription:
                   output_file = 'output_audio.wav'
                   text_to_speech(transcription,target_lang,output_file)
-                  
                   return send_file(output_file, mimetype='audio/wav')
                     # os.remove(output_file)  # Delete after sending
     except Exception as e:
@@ -51,4 +50,5 @@ def translate_speech_to_speech():
 
 
 if __name__ == "__main__":
-    app.run(port = 5000,debug=True)  
+    # app.run(port = 5000,debug=True)  
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
