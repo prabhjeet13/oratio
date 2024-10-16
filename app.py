@@ -2,8 +2,10 @@ from flask import Flask,render_template, request,jsonify,send_file
 import os
 from werkzeug.utils import secure_filename
 from STSModel import speech_to_text, translate_text, text_to_speech
+from flask_cors import CORS
 app = Flask(__name__)
 app.secret_key = '131313' 
+CORS(app)
 @app.route('/')
 def homepage():
     return render_template('index.html')
