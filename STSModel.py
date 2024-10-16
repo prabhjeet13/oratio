@@ -1,15 +1,15 @@
 # 1 Speech to text
 import librosa
-import torch
-from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
+# import torch
+# from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 import re
-from deep_translator import GoogleTranslator
+# from deep_translator import GoogleTranslator
 from googletrans import Translator
-import pyttsx3
+# import pyttsx3
 import os
 import soundfile as sf
 from pocketsphinx import Decoder
-
+from gtts import gTTS
 base_dir = os.path.dirname(__file__)  # Get the current script directory
 cache_dir = os.path.join(base_dir, 'pocketsphinx_cache', 'en-us')
 model_dir = cache_dir
@@ -89,45 +89,48 @@ def translate_text(text: str, target_lang: str) -> str:
 # 3. Text to speech 
 def text_to_speech(text: str, language: str,output_filename: str = 'output_audio.wav'):
     
-    engine = pyttsx3.init()
+    tts = gTTS(text=text, lang=language, slow=False)
+    tts.save(output_filename)
+    return output_filename
+    # engine = pyttsx3.init()
     
     # Set the properties for the voice based on language
-    voices = engine.getProperty('voices')
+    # voices = engine.getProperty('voices')
     
     # Change the voice based on the selected language
 
 
-    translator = Translator()
+    # translator = Translator()
 
     # Translate the text to the target language (French)
-    translated_text = translator.translate(text, dest=language).text
-    print(f"Translated text: {translated_text}")
+    # translated_text = translator.translate(text, dest=language).text
+    # print(f"Translated text: {translated_text}")
 
     # Initialize TTS engine
-    engine = pyttsx3.init()
+    # engine = pyttsx3.init()
 
     # Define voice mapping
-    voices = {
-        'en': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Zira Desktop',  # English
-        'en_US': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Zira Desktop',  # American English
-        'en_GB': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Hazel Desktop',  # British English
-        'fr': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Henri Desktop',  # French
-        'es': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Helena Desktop',  # Spanish
-        'de': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Mark Desktop',  # German
-        'it': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Carla Desktop',  # Italian
-    }
+    # voices = {
+    #     'en': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Zira Desktop',  # English
+    #     'en_US': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Zira Desktop',  # American English
+    #     'en_GB': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Hazel Desktop',  # British English
+    #     'fr': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Henri Desktop',  # French
+    #     'es': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Helena Desktop',  # Spanish
+    #     'de': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Mark Desktop',  # German
+    #     'it': 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\SAPI\\Voices\\Tokens\\Microsoft Carla Desktop',  # Italian
+    # }
 
     # Set the voice based on the selected language
-    if language in voices:
-        engine.setProperty('voice', voices[language])
-    else:
-        print(f"No voice found for language: {language}. Using default voice.")
+    # if language in voices:
+    #     engine.setProperty('voice', voices[language])
+    # else:
+    #     print(f"No voice found for language: {language}. Using default voice.")
     
-    rate = engine.getProperty('rate')
-    engine.setProperty('rate', rate - 50)
+    # rate = engine.getProperty('rate')
+    # engine.setProperty('rate', rate - 50)
 
     # Save speech to a file
-    engine.save_to_file(translated_text, output_filename)
-    engine.runAndWait()
+    # engine.save_to_file(translated_text, output_filename)
+    # engine.runAndWait()
     
-    return output_filename
+    # return output_filename
